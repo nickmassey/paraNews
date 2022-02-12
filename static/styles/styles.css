@@ -1,0 +1,36 @@
+.header {
+	padding-left: 10px;
+	background: rgb(173, 173, 173);
+	border-bottom: 3px solid gray;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-size: 4em;
+	color: rgb(89, 58, 204);
+	font-stretch: extra-expanded;
+}
+
+a {
+	text-decoration: none;
+}
+
+.header a {
+	color: rgb(89, 58, 204);
+}
+
+.result {
+	width: 80%;
+	border-style: solid, ridge, #e8e8e8;
+	border-radius:  5px;
+	background: #f7f7f7;
+	box-shadow: 5px 5px 5px 5px grey, 3px 3px lightgrey inset;
+	margin: 7px 7px 5px 5px;
+	padding: 1px 1px 1px 15px;
+	font-family: Helvetica;
+}
+.result a {
+	text-decoration: underline;
+	color: rgb(89, 58, 204);
+}
+
+body {
+	background:#f2f2f2;
+}

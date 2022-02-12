@@ -1,0 +1,24 @@
+<html>
+<link rel="stylesheet" href="/static/styles/styles.css">
+<div class="header">
+    <a href= "/">ParaNews</a>
+</div>
+<body>
+    {% for item in usrSearch %}
+    <div class = "result">
+        <h2> {{item[0]}}</h2>
+            <ul>
+                <li><p> {{item[1]}}</p></li>
+                <li><p><a href = {{item[2]}} >Link</a></p></li>
+            </ul>
+    </div>
+    {% endfor %}
+
+<div class = "result">
+<form action="/search">
+    <input type="submit" value = "Search" />
+</form>
+</div>
+
+</body>
+</html>
