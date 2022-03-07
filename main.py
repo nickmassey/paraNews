@@ -1,13 +1,30 @@
 from urllib import request
 from flask import Flask, request, render_template
 from flask_restful import Api, Resource
+from dotenv import load_dotenv
 import requests
+import os
+import mysql.connector
 
 
 app = Flask(__name__)
 api = Api(app)
+load_dotenv()
 
-api_key = "fGSQhMjcLuFWe8sHJncYhEAfWDsFzIdy"
+api_key = os.getenv('NYT_API_KEY')
+
+mydb = mysql.connector.connect(
+    #host = "localhost",
+    #user = "nico",
+    #password = os.getenv('DB_PASS'),
+    #database = "paraNews"
+    host = os.getenv('ONLINE_DB_HOST'),
+    user = os.getenv('ONLINE_DB_USER'),
+    password = os.getenv('ONLINE_DB_PASS'),
+    database = os.getenv('ONLINE_DB')
+)
+
+mycursor = mydb.cursor()
 
 def apiSearch(formDict):
     query = formDict['Query']
@@ -27,14 +44,18 @@ def apiSearch(formDict):
 
     output = r.json()
 
-    print(output)
-
     output = output['response']['docs']
 
-    usrResult = []
+    usrResult = []    
 
     for key in output:
         usrResult.append([key['headline']['main'], key['snippet'], key['web_url']])
+        dbInsert = str(key['headline']['main'])
+        sql = "INSERT INTO article_ratings(articleHeadline) VALUES (%s)"
+        val = dbInsert
+        mycursor.execute(sql,(val,))
+    
+    mydb.commit()
 
     return(usrResult)
 
@@ -60,6 +81,3 @@ def results():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
