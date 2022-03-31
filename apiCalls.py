@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+from newsapi import NewsApiClient
 
 nyt_api_key = os.getenv('NYT_API_KEY')
 guar_api_key = os.getenv('GUAR_API_KEY')
@@ -21,21 +22,12 @@ def nytApiSearch(formDict):
             f"&sort={sort}"
 
     r = requests.get(query_url)
-
     output = r.json()
-
     output = output['response']['docs']
-
     usrResult = []    
 
     for key in output:
         usrResult.append([key['headline']['main'], key['web_url'], 'NYT'])
-        dbInsert = str(key['headline']['main'])
-        sql = "INSERT INTO article_ratings(articleHeadline) VALUES (%s)"
-        val = dbInsert
-        #mycursor.execute(sql,(val,))
-    
-    #mydb.commit()
 
     return(usrResult)
 
@@ -48,16 +40,52 @@ def guarApiSearch(formDict):
             f"&page={page}"
             
     r = requests.get(query_url)
-
-
     response = json.loads(r.text)['response']
-
     output = response['results']
-
-
     usrResult = []
 
     for key in output:
         usrResult.append([key['webTitle'], key['webUrl'], 'Guardian'])
       
     return(usrResult)
+
+def bbcApiSearch(formDict):
+    newsapi = NewsApiClient(api_key='de6bdb27a1624954a42b444accfb50ef')
+
+    all_articles = newsapi.get_everything(
+        q=formDict['Query'],
+        sources = 'bbc-news',
+        domains = 'bbc.co.uk',
+        language = 'en',
+        sort_by = 'relevancy',
+        page=1
+    )
+    
+    output = all_articles['articles']
+    usrResult = []
+
+    for key in output:
+        usrResult.append([key['title'], key['url'], 'BBC'])
+
+    return(usrResult)
+
+def apApiSearch(formDict):
+    newsapi = NewsApiClient(api_key='de6bdb27a1624954a42b444accfb50ef')
+
+    all_articles = newsapi.get_everything(
+        q=formDict['Query'],
+        sources = 'associated-press',
+        domains = 'apnews.com',
+        language = 'en',
+        sort_by = 'relevancy',
+        page=1
+    )
+
+    output = all_articles['articles']
+    usrResult = []
+
+    for key in output:
+        usrResult.append([key['title'], key['url'], 'AP'])
+
+    return(usrResult)    
+   

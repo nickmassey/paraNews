@@ -1,11 +1,11 @@
 from urllib import request
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from flask_restful import Api, Resource
 from dotenv import load_dotenv
 import requests
 import os
 import mysql.connector
-from apiCalls import nytApiSearch, guarApiSearch
+from apiCalls import apApiSearch, bbcApiSearch, nytApiSearch, guarApiSearch
 
 app = Flask(__name__)
 api = Api(app)
@@ -58,14 +58,27 @@ def results():
     if request.method == 'POST':
         search_data = request.form
      
+        apSearch = apApiSearch(search_data)
+        bbcSearch = bbcApiSearch(search_data)       
         nytSearch = nytApiSearch(search_data)
         guarSearch = guarApiSearch(search_data)
-        usrSearch = nytSearch + guarSearch
+        usrSearch = nytSearch + guarSearch + bbcSearch + apSearch
 
         databaseUpdate(usrSearch)
         usrSearch = getRatings(usrSearch)
 
         return render_template('results.html', usrSearch = usrSearch)
+
+@app.route('/vote')
+def vote():
+        if request.method == 'POST':
+            if request.form['Submit_Button'] == 'Upvote':
+                print('upvote')
+            if request.form['Submit_Button'] == 'downvote':
+                print('downvote')
+        
+            return redirect(request.url)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

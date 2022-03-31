@@ -19,6 +19,12 @@
                     {% else %}
                     {{item[3]}}</font></p></li>
                     {% endif %}
+                <li><form action="/vote" method = 'POST'>
+                    <input type="submit" name="Submit_Button" value = "Upvote" />
+                </form></li>
+                <li><form action="/vote">
+                    <input type="submit" name="Submit_Button" value = "Downvote" />
+                </form></li>
             </ul>
     </div>
     {% endfor %}
