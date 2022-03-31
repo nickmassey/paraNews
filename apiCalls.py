@@ -50,7 +50,7 @@ def guarApiSearch(formDict):
     return(usrResult)
 
 def bbcApiSearch(formDict):
-    newsapi = NewsApiClient(api_key='de6bdb27a1624954a42b444accfb50ef')
+    newsapi = NewsApiClient(api_key=os.getenv('NEWS_API_KEY'))
 
     all_articles = newsapi.get_everything(
         q=formDict['Query'],
@@ -70,7 +70,7 @@ def bbcApiSearch(formDict):
     return(usrResult)
 
 def apApiSearch(formDict):
-    newsapi = NewsApiClient(api_key='de6bdb27a1624954a42b444accfb50ef')
+    newsapi = NewsApiClient(api_key=os.getenv('NEWS_API_KEY'))
 
     all_articles = newsapi.get_everything(
         q=formDict['Query'],
