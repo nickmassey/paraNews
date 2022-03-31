@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import requests
 import os
 import mysql.connector
-
+from apiCalls import nytApiSearch, guarApiSearch
 
 app = Flask(__name__)
 api = Api(app)
@@ -14,50 +14,33 @@ load_dotenv()
 api_key = os.getenv('NYT_API_KEY')
 
 mydb = mysql.connector.connect(
-    #host = "localhost",
-    #user = "nico",
-    #password = os.getenv('DB_PASS'),
-    #database = "paraNews"
     host = os.getenv('ONLINE_DB_HOST'),
     user = os.getenv('ONLINE_DB_USER'),
     password = os.getenv('ONLINE_DB_PASS'),
     database = os.getenv('ONLINE_DB')
 )
 
-mycursor = mydb.cursor()
+mycursor = mydb.cursor(buffered=True)
 
-def apiSearch(formDict):
-    query = formDict['Query']
-    news_desk = formDict['Topic']
-    begin_date = formDict['Start Date']
-    page = "0"
-    sort = "relevance"
-    query_url = f"https://api.nytimes.com/svc/search/v2/articlesearch.json?" \
-            f"q={query}" \
-            f"&api-key={api_key}" \
-            f"&begin_date={begin_date}" \
-            f"&fq={news_desk}" \
-            f"&page={page}" \
-            f"&sort={sort}"
-
-    r = requests.get(query_url)
-
-    output = r.json()
-
-    output = output['response']['docs']
-
-    usrResult = []    
-
-    for key in output:
-        usrResult.append([key['headline']['main'], key['snippet'], key['web_url']])
-        dbInsert = str(key['headline']['main'])
-        sql = "INSERT INTO article_ratings(articleHeadline) VALUES (%s)"
-        val = dbInsert
-        mycursor.execute(sql,(val,))
-    
+def databaseUpdate(usrSearch):
+    sql = "INSERT IGNORE INTO article_ratings(headLine, source) VALUES (%s, %s)"
+    for key in usrSearch:
+            headline = (key[0])
+            source = (key[2])
+            data = headline, source
+            mycursor.execute(sql, data)
     mydb.commit()
 
-    return(usrResult)
+def getRatings(usrSearch):    
+    for item in usrSearch:
+        sql = "SELECT rating FROM article_ratings WHERE headline = %s"
+        val = (item[0])
+        mycursor.execute(sql,(val,))
+        rating = mycursor.fetchall()
+        item.append(rating[0][0])
+    mycursor.reset()
+
+    return(usrSearch)
 
 @app.route('/')
 def home():
@@ -75,8 +58,13 @@ def results():
     if request.method == 'POST':
         search_data = request.form
      
-        usrSearch = apiSearch(search_data)
-        
+        nytSearch = nytApiSearch(search_data)
+        guarSearch = guarApiSearch(search_data)
+        usrSearch = nytSearch + guarSearch
+
+        databaseUpdate(usrSearch)
+        usrSearch = getRatings(usrSearch)
+
         return render_template('results.html', usrSearch = usrSearch)
 
 if __name__ == "__main__":

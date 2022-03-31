@@ -8,8 +8,17 @@
     <div class = "result">
         <h2> {{item[0]}}</h2>
             <ul>
-                <li><p> {{item[1]}}</p></li>
-                <li><p><a href = {{item[2]}} >Link</a></p></li>
+                <!-- <li><p> {{item[1]}}</p></li> -->
+                <li><p><a href = {{item[1]}} >Link</a></p></li>
+                <li><p>{{item[2]}}</p></li>
+                <li><p>Rating: 
+                    {% if item[3] > 4 %}
+                    <font color="green">{{item[3]}}</font></p></li>
+                    {% elif item[3] < 0 %}
+                    <font color="red">{{item[3]}}</font></p></li>
+                    {% else %}
+                    {{item[3]}}</font></p></li>
+                    {% endif %}
             </ul>
     </div>
     {% endfor %}
