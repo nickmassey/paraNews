@@ -1,38 +1,49 @@
 <html>
-<link rel="stylesheet" href="/static/styles/styles.css">
+
+<head>
+    <link rel="stylesheet" href="/static/styles/styles.css" type="text/css">
+</head>
+
 <div class="header">
     <a href= "/">ParaNews</a>
 </div>
 <body>
-    {% for item in usrSearch %}
-    <div class = "result">
-        <h2> {{item[0]}}</h2>
-            <ul>
-                <!-- <li><p> {{item[1]}}</p></li> -->
-                <li><p><a href = {{item[1]}} >Link</a></p></li>
-                <li><p>{{item[2]}}</p></li>
-                <li><p>Rating: 
-                    {% if item[3] > 4 %}
-                    <font color="green">{{item[3]}}</font></p></li>
-                    {% elif item[3] < 0 %}
-                    <font color="red">{{item[3]}}</font></p></li>
-                    {% else %}
-                    {{item[3]}}</font></p></li>
-                    {% endif %}
-                <li><form action="/vote" method = 'POST'>
-                    <input type="submit" name="Submit_Button" value = "Upvote" />
-                </form></li>
-                <li><form action="/vote">
-                    <input type="submit" name="Submit_Button" value = "Downvote" />
-                </form></li>
-            </ul>
-    </div>
-    {% endfor %}
+    <table class="center">
+        <thead>
+            <th>Headline</th>
+            <th>Source</th>
+            <th>Rating</th>
+        </thead>
+        <tbody>
+            {% for item in usrSearch %}                
+                <tr>    
+                    <td class="headline"><a href = {{item[1]}}>{{item[0]}}</a></td>
+                    <td>
+                        {% if item[2] == "NYT" %}
+                            <img src="/static/res/nytLogo.png" alt="New York Times" style="width:55px;height:55px;">
+                        {% elif item[2] == "Guardian" %}
+                            <img src="/static/res/guarLogo.png" alt="The Guardian" style="width:55px;height:55px;">
+                        {% elif item[2] == "BBC" %}
+                            <img src="/static/res/bbcLogo.png" alt="BBC" style="width:55px;height:55px;">
+                        {% elif item[2] == "AP" %}
+                            <img src="/static/res/apLogo.png" alt="Alternative Press" style="width:55px;height:55px;">  
+                        {% endif %}      
+                    </td>
+                    <td style="text-align: center">
+                        {% if item[3] > 4 %}
+                            <font color="green" weight="bolder">{{item[3]}}</font></p></li>
+                        {% elif item[3] < 0 %}
+                            <font color="red">{{item[3]}}</font></p></li>
+                        {% else %}
+                            {{item[3]}}</font></p></li>
+                        {% endif %}</td>
+                    <td><form action="/vote" method = "POST"><input type="submit" name="{{item[0]}}" value="upvote"></form></td>
+                    <td><form action="/vote" method = "POST"><input type="submit" name="{{item[0]}}" value="downvote"></form></td>
+                </tr>                
+            {% endfor %}
+        </tbody>
+    </table>
 
-<div class = "result">
-<form action="/search">
-    <input type="submit" value = "Search" />
-</form>
-</div>
+
 </body>
 </html>

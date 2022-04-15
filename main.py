@@ -39,8 +39,22 @@ def getRatings(usrSearch):
         rating = mycursor.fetchall()
         item.append(rating[0][0])
     mycursor.reset()
+    mydb.commit()
 
     return(usrSearch)
+
+def upVote(headline):
+    sql = "UPDATE article_ratings SET rating = rating + 1 WHERE headline = %s"
+    val = headline
+    mycursor.execute(sql, (val,))
+    mydb.commit()
+
+def downVote(headline):
+    sql = "UPDATE article_ratings SET rating = rating - 1 WHERE headline = %s"
+    val = headline
+    mycursor.execute(sql, (val,))
+    mydb.commit()
+
 
 @app.route('/')
 def home():
@@ -56,6 +70,7 @@ def results():
     if request.method == 'GET':
         return f"The URL /data is accessed directly. Try going to '/search' to submit form"
     if request.method == 'POST':
+        
         search_data = request.form
      
         apSearch = apApiSearch(search_data)
@@ -69,15 +84,20 @@ def results():
 
         return render_template('results.html', usrSearch = usrSearch)
 
-@app.route('/vote')
+@app.route('/vote', methods=['POST'])
 def vote():
         if request.method == 'POST':
-            if request.form['Submit_Button'] == 'Upvote':
-                print('upvote')
-            if request.form['Submit_Button'] == 'downvote':
-                print('downvote')
-        
-            return redirect(request.url)
+            headLine = list(request.form.keys())
+            vote = list(request.form.values())
+            vote = vote[0]
+            headLine = headLine[0]
+            if(vote == "upvote"):
+                print(headLine)
+                upVote(headLine)
+            elif(vote == "downvote"):
+                downVote(headLine)
+
+            return redirect('/search')
 
 
 if __name__ == "__main__":

@@ -12,25 +12,59 @@ a {
 	text-decoration: none;
 }
 
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+tr {
+	border: 1px solid black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-style: bolder;
+	max-width: fit-content;
+}
+
+.headline {
+	padding-left: 15px;
+}
+
+tr:nth-child(odd) {background-color: #dadada;}
+tr:hover {background-color: rgb(194, 185, 230);}
+
+
 .header a {
 	color: rgb(89, 58, 204);
 }
 
 .result {
-	width: 80%;
+	width: 90%;
+	height: 25%;
 	border-style: solid, ridge, #e8e8e8;
 	border-radius:  5px;
 	background: #f7f7f7;
 	box-shadow: 5px 5px 5px 5px grey, 3px 3px lightgrey inset;
 	margin: 7px 7px 5px 5px;
-	padding: 1px 1px 1px 15px;
+	padding: 1px 1px 1px 5px;
 	font-family: Helvetica;
 }
 .result a {
-	text-decoration: underline;
+	text-decoration: none;
 	color: rgb(89, 58, 204);
 }
 
 body {
 	background:#f2f2f2;
 }
+
+.column {
+	float: left;
+	width: 25%;
+}
+
+.queries {
+	width: 350px;
+	display: inline-block;
+	color: blue;
+}
+
