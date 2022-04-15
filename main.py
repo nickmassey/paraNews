@@ -38,7 +38,6 @@ def getRatings(usrSearch):
         mycursor.execute(sql,(val,))
         rating = mycursor.fetchall()
         item.append(rating[0][0])
-    mycursor.reset()
     mydb.commit()
 
     return(usrSearch)
