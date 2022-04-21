@@ -69,9 +69,8 @@ def results():
     if request.method == 'GET':
         return f"The URL /data is accessed directly. Try going to '/search' to submit form"
     if request.method == 'POST':
-        
         search_data = request.form
-     
+
         apSearch = apApiSearch(search_data)
         bbcSearch = bbcApiSearch(search_data)       
         nytSearch = nytApiSearch(search_data)
@@ -80,7 +79,8 @@ def results():
 
         databaseUpdate(usrSearch)
         usrSearch = getRatings(usrSearch)
-
+        usrSearch.sort(key=lambda x: int(x[3]), reverse=True)
+        
         return render_template('results.html', usrSearch = usrSearch)
 
 @app.route('/vote', methods=['POST'])
@@ -91,7 +91,6 @@ def vote():
             vote = vote[0]
             headLine = headLine[0]
             if(vote == "upvote"):
-                print(headLine)
                 upVote(headLine)
             elif(vote == "downvote"):
                 downVote(headLine)

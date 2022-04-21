@@ -37,7 +37,7 @@
                         {% else %}
                             {{item[3]}}</font></p></li>
                         {% endif %}</td>
-                    <td><form action="/vote" method = "POST"><input type="submit" name="{{item[0]}}" value="upvote"></form></td>
+                    <td><div class="upvote"><form action="/vote" method = "POST"><input type="submit" name="{{item[0]}}" value="upvote"></form></div></td>
                     <td><form action="/vote" method = "POST"><input type="submit" name="{{item[0]}}" value="downvote"></form></td>
                 </tr>                
             {% endfor %}
